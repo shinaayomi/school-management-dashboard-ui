@@ -9,8 +9,12 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+       shinaSky: '#C3EBFA',
+       shinaSkyLight: '#EDF9FD',
+       shinaPurple: '#CFCEFF',
+       shinaPurpleLight: '#F1F0FF',
+       shinaYellow: '#FAE27C',
+       shinaYellowLight: '#FEFCE8',
       },
     },
   },
