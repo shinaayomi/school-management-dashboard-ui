@@ -67,7 +67,7 @@ export default function AttendanceChart() {
             tick={{ fill: "#d1d5db" }}
             tickLine={false}
           />
-          <YAxis axisLine={false} />
+          <YAxis axisLine={false} tick={{ fill: "#d1d5db" }} tickLine={false} />
           <Tooltip
             contentStyle={{ borderRadius: "10px", borderColor: "lightgray" }}
           />
