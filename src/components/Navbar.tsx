@@ -5,7 +5,7 @@ export default function Navbar() {
   return (
     <div className="flex items-center justify-between p-4">
       {/* SEARCH BAR */}
-      <div className="hidden md:flex items-center gap-2 text-xs rounded-full ring-[1.5px] ring-gray-300 px-3">
+      <div className="hidden md:flex items-center gap-2 text-xs rounded-full ring-[1.5px] ring-gray-300 px-2">
         <Image
           src="/images/search.png"
           alt="search"
