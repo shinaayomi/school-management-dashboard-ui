@@ -1,6 +1,6 @@
 import type { Config } from "tailwindcss";
 
-const config: Config = {
+export default {
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -9,15 +9,14 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-       shinaSky: '#C3EBFA',
-       shinaSkyLight: '#EDF9FD',
-       shinaPurple: '#CFCEFF',
-       shinaPurpleLight: '#F1F0FF',
-       shinaYellow: '#FAE27C',
-       shinaYellowLight: '#FEFCE8',
-      },
+        shinaSky: '#C3EBFA',
+        shinaSkyLight: '#EDF9FD',
+        shinaPurple: '#CFCEFF',
+        shinaPurpleLight: '#F1F0FF',
+        shinaYellow: '#FAE27C',
+        shinaYellowLight: '#FEFCE8',
+       },
     },
   },
   plugins: [],
-};
-export default config;
+} satisfies Config;
