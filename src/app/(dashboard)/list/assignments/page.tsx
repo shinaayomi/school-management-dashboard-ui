@@ -4,14 +4,13 @@ import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
 import { assignmentsData, role } from "@/lib/data";
 import Image from "next/image";
-import Link from "next/link";
 import React from "react";
 
 type Assignment = {
   id: number;
   subject: string;
-  class: number;
-  teacher: number;
+  class: string;
+  teacher: string;
   dueDate: string;
 };
 
@@ -46,17 +45,17 @@ export default function AssignmentListPage() {
       <td className="hidden md:table-cell">{item.dueDate}</td>
       <td>
         <div className="flex items-center gap-2">
-          <Link href={`/list/teachers/${item.id}`}>
+          {/* <Link href={`/list/teachers/${item.id}`}>
             <button className="w-7 h-7 flex items-center justify-center rounded-full bg-shinaSky">
               <Image
-                src="/images/edit.png"
+                src="/images/update.png"
                 alt=""
                 width={16}
                 height={16}
                 priority
               />
             </button>
-          </Link>
+          </Link> */}
           {role === "admin" && (
             <>
               <FormModal table="assignment" type="update" data={item} />{" "}
