@@ -8,7 +8,7 @@ const nextConfig: NextConfig = {
   //   // buildActivity: false,
   // },
   images: {
-    remotePatterns: [{ hostname: "images.pexels.com" }],
+    remotePatterns: [new URL('https://res.cloudinary.com/shinadev/image/upload/**'), new URL('https://images.pexels.com/photos/**')],
   },
   // typescript: {
   //   // !! WARN !!
