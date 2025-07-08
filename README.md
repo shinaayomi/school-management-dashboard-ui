@@ -42,3 +42,9 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 (https://www.youtube.com/watch?v=f8Z9JyB2EIE)
 (https://www.youtube.com/watch?v=o3IqOrXtxm8)
 [nativewind.dev]
+
+solid principle
+Three shaking
+Code spliting
+FCP
+excential state and derived state

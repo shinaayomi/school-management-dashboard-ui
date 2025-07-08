@@ -1,41 +1,55 @@
-import FormModal from "@/components/FormModal";
+import FormContainer from "@/components/FormContainer";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
-import { lessonsData, role } from "@/lib/data";
+// import { lessonsData, role } from "@/lib/data";
 import Image from "next/image";
 import React from "react";
+import {
+  Class,
+  Lesson,
+  Prisma,
+  Subject,
+  Teacher,
+} from "../../../../../generated/prisma";
+import { prisma } from "@/lib/prisma";
+import { ITEM_PER_PAGE } from "@/lib/settings";
 
-type Lesson = {
-  id: number;
-  subject: string;
-  class: string;
-  teacher: string;
+type LessonList = Lesson & { subject: Subject } & { class: Class } & {
+  teacher: Teacher;
 };
 
-const columns = [
-  { header: "Subject Name", accessor: "name" },
-  {
-    header: "Class",
-    accessor: "class",
-  },
-  {
-    header: "Teacher",
-    accessor: "teacher",
-    className: "hidden md:table-cell",
-  },
-  { header: "Actions", accessor: "actions" },
-];
+export default async function LessonListPage({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | undefined };
+}) {
+  const { role } = await import("@/lib/utils").then((mod) => mod.getAuthInfo());
 
-export default function LessonListPage() {
-  const renderRow = (item: Lesson) => (
+  const columns = [
+    { header: "Subject Name", accessor: "name" },
+    {
+      header: "Class",
+      accessor: "class",
+    },
+    {
+      header: "Teacher",
+      accessor: "teacher",
+      className: "hidden md:table-cell",
+    },
+    ...(role === "admin" ? [{ header: "Actions", accessor: "actions" }] : []),
+  ];
+
+  const renderRow = (item: LessonList) => (
     <tr
       key={item.id}
       className="border-b border-gray-200 even:border-slate-50 text-sm hover:bg-shinaPurpleLight"
     >
-      <td className="flex items-center gap-4 p-4">{item.subject}</td>
-      <td>{item.class}</td>
-      <td className="hidden md:table-cell">{item.teacher}</td>
+      <td className="flex items-center gap-4 p-4">{item.subject.name}</td>
+      <td>{item.class.name}</td>
+      <td className="hidden md:table-cell">
+        {item.teacher.name + " " + item.teacher.surname}
+      </td>
       <td>
         <div className="flex items-center gap-2">
           {/* <Link href={`/list/teachers/${item.id}`}>
@@ -51,14 +65,63 @@ export default function LessonListPage() {
           </Link> */}
           {role === "admin" && (
             <>
-              <FormModal table="lesson" type="update" data={item} />
-              <FormModal table="lesson" type="delete" id={item.id} />
+              <FormContainer table="lesson" type="update" data={item} />
+              <FormContainer table="lesson" type="delete" id={item.id} />
             </>
           )}
         </div>
       </td>
     </tr>
   );
+
+  const { page, ...queryParams } = searchParams;
+
+  const p = page ? parseInt(page as string) : 1;
+
+  // URL PARAMS CONDITION
+
+  const query: Prisma.LessonWhereInput = {};
+
+  if (queryParams) {
+    for (const [key, value] of Object.entries(queryParams)) {
+      if (value !== undefined) {
+        switch (key) {
+          case "classId":
+            query.classId = parseInt(value);
+            break;
+          case "teacherId":
+            query.teacherId = value;
+            break;
+          case "search":
+            query.OR = [
+              { subject: { name: { contains: value, mode: "insensitive" } } },
+              { teacher: { name: { contains: value, mode: "insensitive" } } },
+            ];
+            break;
+          default:
+            break;
+        }
+      }
+    }
+  }
+
+  const [data, count] = await prisma.$transaction([
+    prisma.lesson.findMany({
+      //   where: {
+      //     lessons: { some: { classId: parseInt(queryParams.classId!) } },
+      //   },
+      where: query,
+      include: {
+        subject: { select: { name: true } },
+        class: { select: { name: true } },
+        teacher: { select: { name: true, surname: true } },
+      },
+      take: ITEM_PER_PAGE,
+      skip: ITEM_PER_PAGE * (p - 1),
+    }),
+
+    prisma.lesson.count({ where: query }),
+  ]);
 
   return (
     <div className="bg-white p-4 rounded-md m-4 mt-0">
@@ -86,14 +149,14 @@ export default function LessonListPage() {
                 priority
               />
             </button>
-            {role === "admin" && <FormModal table="lesson" type="create" />}
+            {role === "admin" && <FormContainer table="lesson" type="create" />}
           </div>
         </div>
       </div>
       {/* LIST */}
-      <Table columns={columns} renderRow={renderRow} data={lessonsData} />
+      <Table columns={columns} renderRow={renderRow} data={data} />
       {/* PAGINATION */}
-      <Pagination />
+      <Pagination page={p} count={count} />
     </div>
   );
 }
